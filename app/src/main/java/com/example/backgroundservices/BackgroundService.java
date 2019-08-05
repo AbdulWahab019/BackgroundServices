@@ -75,10 +75,4 @@ public class BackgroundService extends Service {
     public IBinder onBind(Intent intent) {
         return service;
     }
-
-    class storageBinder extends Binder {
-        BackgroundService getService() {
-            return BackgroundService.this;
-        }
-    }
 }

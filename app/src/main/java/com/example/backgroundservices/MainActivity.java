@@ -20,9 +20,9 @@ import com.google.android.gms.fitness.data.DataPoint;
 import com.google.android.gms.fitness.data.DataSet;
 import com.google.android.gms.fitness.data.DataType;
 import com.google.android.gms.fitness.data.Field;
+import com.google.android.gms.fitness.data.Value;
 import com.google.android.gms.fitness.result.DailyTotalResult;
 
-import java.text.DateFormat;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -32,9 +32,10 @@ public class MainActivity extends AppCompatActivity implements
         View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
-    TextView totalMemory, availableMemory, RAM;
+    TextView totalMemory, availableMemory, RAM, totalStepsToday;
     BackgroundService service = new BackgroundService();
     Handler handler = new Handler();
+    Value val;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +45,9 @@ public class MainActivity extends AppCompatActivity implements
         totalMemory = findViewById(R.id.totalMemory);
         availableMemory = findViewById(R.id.availableMemory);
         RAM = findViewById(R.id.RAMSize);
+        totalStepsToday = findViewById(R.id.stepsToday);
 
-
+        // Setting Up Google Fit API
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(Fitness.HISTORY_API)
                 .addScope(new Scope(Scopes.FITNESS_ACTIVITY_READ))
@@ -53,17 +55,25 @@ public class MainActivity extends AppCompatActivity implements
                 .enableAutoManage(this, 0, this)
                 .build();
 
+
+        handlingData();
+    }
+
+    private void handlingData(){
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 availableMemory.setText(BackgroundService.getAvailableInternalMemorySize());
                 totalMemory.setText(BackgroundService.getTotalInternalMemorySize());
                 RAM.setText(service.getTotalRamSize(getApplicationContext()));
+                totalStepsToday.setText(String.format("%s", val));
                 runTodaysStepCount();
 
                 handler.postDelayed(this, 1000);
             }
         },1000);
+
     }
 
     private void runTodaysStepCount(){
@@ -79,10 +89,15 @@ public class MainActivity extends AppCompatActivity implements
     public void onClick(View v) { }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        Log.e("HistoryAPI", "onPause");
+    }
+
+    @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.e("HistoryAPI", "onConnected");
-
-        runTodaysStepCount();
+        handlingData();
     }
 
     @Override
@@ -96,10 +111,8 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void displayStepDataForToday() {
-        Log.e("History", "displayStepDataForToday");
         DailyTotalResult result = Fitness.HistoryApi.readDailyTotal(mGoogleApiClient, DataType.TYPE_STEP_COUNT_DELTA).await(1, TimeUnit.MINUTES);
         showDataSet(Objects.requireNonNull(result.getTotal()));
-        Log.i("History", "Worked");
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -111,20 +124,10 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     private void showDataSet(DataSet dataSet) {
-        Log.e("History", "Data returned for Data type: " + dataSet.getDataType().getName());
-        DateFormat dateFormat = DateFormat.getDateInstance();
-        DateFormat timeFormat = DateFormat.getTimeInstance();
-
-        Log.e("History", "dataSet.getDataPoints(): " + dataSet.getDataPoints());
-
         for (DataPoint dp : dataSet.getDataPoints()) {
-            Log.e("History", "Data point:");
-            Log.e("History", "\tType: " + dp.getDataType().getName());
-            Log.e("History", "\tStart: " + dateFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
-            Log.e("History", "\tEnd: " + dateFormat.format(dp.getEndTime(TimeUnit.MILLISECONDS)) + " " + timeFormat.format(dp.getStartTime(TimeUnit.MILLISECONDS)));
             for (Field field : dp.getDataType().getFields()) {
-                Log.e("History", "\tField: " + field.getName() +
-                        " Value: " + dp.getValue(field));
+                Log.e("History", "Value: " + dp.getValue(field));
+                val = dp.getValue(field);
             }
         }
     }

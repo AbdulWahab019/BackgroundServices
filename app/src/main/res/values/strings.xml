@@ -5,4 +5,5 @@
     <string name="total_internal_memory">Total Internal Memory</string>
     <string name="internal_memory_available">Internal Memory Available</string>
     <string name="ram_size">RAM Size</string>
+    <string name="total_steps_today">Total Steps Today</string>
 </resources>
