@@ -3,6 +3,7 @@ package com.example.backgroundservices;
 import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements
     private GoogleApiClient mGoogleApiClient;
     TextView totalMemory, availableMemory, RAM;
     BackgroundService service = new BackgroundService();
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,26 +53,36 @@ public class MainActivity extends AppCompatActivity implements
                 .enableAutoManage(this, 0, this)
                 .build();
 
-        availableMemory.setText(BackgroundService.getAvailableInternalMemorySize());
-        totalMemory.setText(BackgroundService.getTotalInternalMemorySize());
-        RAM.setText(service.getTotalRamSize(getApplicationContext()));
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                availableMemory.setText(BackgroundService.getAvailableInternalMemorySize());
+                totalMemory.setText(BackgroundService.getTotalInternalMemorySize());
+                RAM.setText(service.getTotalRamSize(getApplicationContext()));
+                runTodaysStepCount();
 
+                handler.postDelayed(this, 1000);
+            }
+        },1000);
     }
 
-    @Override
-    public void onClick(View v) {
-
-    }
-
-    @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.e("HistoryAPI", "onConnected");
+    private void runTodaysStepCount(){
         ViewTodaysStepCountTask.execute(new Runnable() {
             @Override
             public void run() {
                 displayStepDataForToday();
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) { }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        Log.e("HistoryAPI", "onConnected");
+
+        runTodaysStepCount();
     }
 
     @Override
@@ -85,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private void displayStepDataForToday() {
         Log.e("History", "displayStepDataForToday");
-        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal(mGoogleApiClient, DataType.TYPE_STEP_COUNT_DELTA).await();
+        DailyTotalResult result = Fitness.HistoryApi.readDailyTotal(mGoogleApiClient, DataType.TYPE_STEP_COUNT_DELTA).await(1, TimeUnit.MINUTES);
         showDataSet(Objects.requireNonNull(result.getTotal()));
         Log.i("History", "Worked");
     }
