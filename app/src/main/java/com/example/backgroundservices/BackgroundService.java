@@ -1,6 +1,8 @@
 package com.example.backgroundservices;
 
+import android.app.ActivityManager;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
 import android.os.Environment;
@@ -13,6 +15,15 @@ import java.io.File;
 public class BackgroundService extends Service {
 
     final IBinder service = new Binder();
+
+    public String getTotalRamSize(Context con){
+        ActivityManager actManager = (ActivityManager) con.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+        actManager.getMemoryInfo(memInfo);
+        long totalMemory = memInfo.totalMem;
+
+        return formatSize(totalMemory);
+    }
 
     public static String getAvailableInternalMemorySize() {
         File path = Environment.getDataDirectory();
