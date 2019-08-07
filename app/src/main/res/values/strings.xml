@@ -6,4 +6,8 @@
     <string name="internal_memory_available">Internal Memory Available</string>
     <string name="ram_size">RAM Size</string>
     <string name="total_steps_today">Total Steps Today</string>
+    <string name="service_2">Service 2</string>
+    <string name="service_1">Service 1</string>
+    <string name="call_logs">Call Logs</string>
+    <string name="service_3">Service 3</string>
 </resources>

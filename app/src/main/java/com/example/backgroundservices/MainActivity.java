@@ -1,6 +1,7 @@
 package com.example.backgroundservices;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -42,6 +43,10 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        initialization();
+    }
+
+    private void initialization(){
         totalMemory = findViewById(R.id.totalMemory);
         availableMemory = findViewById(R.id.availableMemory);
         RAM = findViewById(R.id.RAMSize);
@@ -55,12 +60,10 @@ public class MainActivity extends AppCompatActivity implements
                 .enableAutoManage(this, 0, this)
                 .build();
 
-
         handlingData();
     }
 
     private void handlingData(){
-
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -73,7 +76,6 @@ public class MainActivity extends AppCompatActivity implements
                 handler.postDelayed(this, 1000);
             }
         },1000);
-
     }
 
     private void runTodaysStepCount(){
@@ -92,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onPause() {
         super.onPause();
         Log.e("HistoryAPI", "onPause");
+        handler.removeCallbacksAndMessages(null);
     }
 
     @Override
@@ -130,5 +133,10 @@ public class MainActivity extends AppCompatActivity implements
                 val = dp.getValue(field);
             }
         }
+    }
+
+    public void readCallLogs(View view) {
+        Intent intent = new Intent(MainActivity.this, CallLogActivity.class);
+        startActivity(intent);
     }
 }
