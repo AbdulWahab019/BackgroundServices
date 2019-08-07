@@ -14,8 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name="$InstalledApps.InstalledAppsActivity" />
-        <activity android:name="$CallLogs.CallLogActivity" />
+        <activity android:name=".InstalledApps.InstalledAppsActivity"
+            tools:ignore="InnerclassSeparator" />
+        <activity android:name=".CallLogs.CallLogActivity"
+            tools:ignore="InnerclassSeparator" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,8 +26,9 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".BackgroundService" />
-        <service android:name="$CallLogs.CallLogService" />
+        <service android:name=".StorageService" />
+        <service android:name=".CallLogs.CallLogService"
+            tools:ignore="InnerclassSeparator" />
     </application>
 
 </manifest>

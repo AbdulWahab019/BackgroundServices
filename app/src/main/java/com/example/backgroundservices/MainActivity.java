@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements
 
     private GoogleApiClient mGoogleApiClient;
     TextView totalMemory, availableMemory, RAM, totalStepsToday;
-    BackgroundService service = new BackgroundService();
+    StorageService service = new StorageService();
     Handler handler = new Handler();
     Value val;
 
@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                availableMemory.setText(BackgroundService.getAvailableInternalMemorySize());
-                totalMemory.setText(BackgroundService.getTotalInternalMemorySize());
+                availableMemory.setText(StorageService.getAvailableInternalMemorySize());
+                totalMemory.setText(StorageService.getTotalInternalMemorySize());
                 RAM.setText(service.getTotalRamSize(getApplicationContext()));
                 totalStepsToday.setText(String.format("%s", val));
                 runTodaysStepCount();

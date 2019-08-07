@@ -12,7 +12,7 @@ import android.widget.Toast;
 
 import java.io.File;
 
-public class BackgroundService extends Service {
+public class StorageService extends Service {
 
     final IBinder service = new Binder();
 
