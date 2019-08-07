@@ -14,8 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <!--suppress CheckTagEmptyBody -->
-        <activity android:name=".CallLogActivity"></activity>
+        <activity android:name="$InstalledApps.InstalledAppsActivity" />
+        <activity android:name="$CallLogs.CallLogActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,7 +25,7 @@
         </activity>
 
         <service android:name=".BackgroundService" />
-        <service android:name=".CallLogService" />
+        <service android:name="$CallLogs.CallLogService" />
     </application>
 
 </manifest>

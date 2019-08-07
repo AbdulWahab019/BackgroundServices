@@ -10,4 +10,9 @@
     <string name="service_1">Service 1</string>
     <string name="call_logs">Call Logs</string>
     <string name="service_3">Service 3</string>
+    <string name="installed_application">Installed Application</string>
+    <string name="app_icon">App Icon</string>
+    <string name="application_name">Application Name</string>
+    <string name="service_4">Service 4</string>
+    <string name="installed_apps">Installed Apps</string>
 </resources>

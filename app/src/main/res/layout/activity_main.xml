@@ -124,4 +124,27 @@
             android:onClick="readCallLogs"/>
 
     </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/service_4"
+            android:layout_gravity="center_horizontal"
+            android:textSize="30sp"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="10sp"
+            android:text="@string/installed_apps"
+            android:onClick="checkInstalledApps"/>
+
+    </LinearLayout>
 </LinearLayout>

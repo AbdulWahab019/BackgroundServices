@@ -8,10 +8,11 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.backgroundservices.CallLogs.CallLogActivity;
+import com.example.backgroundservices.InstalledApps.InstalledAppsActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -93,25 +94,17 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onPause() {
         super.onPause();
-        Log.e("HistoryAPI", "onPause");
         handler.removeCallbacksAndMessages(null);
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
-        Log.e("HistoryAPI", "onConnected");
-        handlingData();
-    }
+    public void onConnected(@Nullable Bundle bundle) { handlingData(); }
 
     @Override
-    public void onConnectionSuspended(int i) {
-        Log.e("HistoryAPI", "onConnectionSuspended");
-    }
+    public void onConnectionSuspended(int i) { }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.e("HistoryAPI", "onConnectionFailed");
-    }
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) { }
 
     private void displayStepDataForToday() {
         DailyTotalResult result = Fitness.HistoryApi.readDailyTotal(mGoogleApiClient, DataType.TYPE_STEP_COUNT_DELTA).await(1, TimeUnit.MINUTES);
@@ -129,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements
     private void showDataSet(DataSet dataSet) {
         for (DataPoint dp : dataSet.getDataPoints()) {
             for (Field field : dp.getDataType().getFields()) {
-                Log.e("History", "Value: " + dp.getValue(field));
                 val = dp.getValue(field);
             }
         }
@@ -137,6 +129,11 @@ public class MainActivity extends AppCompatActivity implements
 
     public void readCallLogs(View view) {
         Intent intent = new Intent(MainActivity.this, CallLogActivity.class);
+        startActivity(intent);
+    }
+
+    public void checkInstalledApps(View view) {
+        Intent intent = new Intent(MainActivity.this, InstalledAppsActivity.class);
         startActivity(intent);
     }
 }

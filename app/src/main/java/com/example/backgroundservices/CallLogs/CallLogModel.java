@@ -1,5 +1,6 @@
-package com.example.backgroundservices;
+package com.example.backgroundservices.CallLogs;
 
+@SuppressWarnings({"NullableProblems", "WeakerAccess"})
 public class CallLogModel {
     private String name;
     private String contactNumber;
