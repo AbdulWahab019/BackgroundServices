@@ -1,7 +1,10 @@
 package com.example.backgroundservices;
 
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,6 +16,8 @@ import android.widget.TextView;
 
 import com.example.backgroundservices.CallLogs.CallLogActivity;
 import com.example.backgroundservices.InstalledApps.InstalledAppsActivity;
+import com.example.backgroundservices.messageReceiver.MessageListener;
+import com.example.backgroundservices.messageReceiver.MessageReceiver;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -34,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements
         View.OnClickListener {
 
     private GoogleApiClient mGoogleApiClient;
-    TextView totalMemory, availableMemory, RAM, totalStepsToday;
+    TextView totalMemory, availableMemory, RAM, totalStepsToday, lastMessage;
     StorageService service = new StorageService();
     Handler handler = new Handler();
     Value val;
@@ -45,6 +50,29 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         initialization();
+        initializeMessage();
+    }
+
+    private void initializeMessage(){
+        Uri myMessage = Uri.parse("content://sms/");
+
+        ContentResolver cr = getContentResolver();
+        Cursor c = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            c = cr.query(myMessage, null, null,null);
+        }
+
+        assert c != null;
+        getLastMessage(c);
+    }
+
+    private void getLastMessage(Cursor c){
+        c.moveToFirst();
+        String sender = c.getString(c.getColumnIndexOrThrow("address"));
+        String messageBody = c.getString(c.getColumnIndexOrThrow("body"));
+        c.close();
+
+        lastMessage.setText(String.format("Sender: %s\nMessage: %s", sender, messageBody));
     }
 
     private void initialization(){
@@ -52,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         availableMemory = findViewById(R.id.availableMemory);
         RAM = findViewById(R.id.RAMSize);
         totalStepsToday = findViewById(R.id.stepsToday);
+        lastMessage = findViewById(R.id.lastMessage);
 
         // Setting Up Google Fit API
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -61,7 +90,17 @@ public class MainActivity extends AppCompatActivity implements
                 .enableAutoManage(this, 0, this)
                 .build();
 
+        settingMessageHandler();
         handlingData();
+    }
+
+    private void settingMessageHandler() {
+        MessageReceiver.bindListener(new MessageListener(){
+            @Override
+            public void messageReceived(String message){
+                lastMessage.setText(message);
+            }
+        });
     }
 
     private void handlingData(){

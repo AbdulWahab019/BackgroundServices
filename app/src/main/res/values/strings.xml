@@ -15,4 +15,7 @@
     <string name="application_name">Application Name</string>
     <string name="service_4">Service 4</string>
     <string name="installed_apps">Installed Apps</string>
+    <string name="service_5">Service 5</string>
+    <string name="message">Message</string>
+    <string name="endLine">_______________________________________</string>
 </resources>

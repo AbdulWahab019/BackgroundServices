@@ -16,7 +16,12 @@ public class CallLogModel {
         this.type = type;
     }
 
-    public String getName() { return name; }
+    public String getName() {
+        if(name == null)
+            return "Unsaved";
+
+        return name;
+    }
 
     public String getContactNumber() { return contactNumber; }
 
@@ -27,10 +32,10 @@ public class CallLogModel {
     public String getType() { return type; }
 
     public String toString(){
-        return "Name: "+getName()+
-                "\nContactNumber: " + getContactNumber()+
+        return "\nName: "+getName()+
+                "\nNumber: " + getContactNumber()+
                 "\nDuration: " + getDuration()+
                 "\nDate: " + getDate()+
-                "\nType: " + getType();
+                "\nType: " + getType()+"\n";
     }
 }
